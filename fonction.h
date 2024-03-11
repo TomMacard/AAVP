@@ -1,3 +1,12 @@
+/*
+ * Fichier: fonction.h
+ * Auteur: Tom MACARD
+ * ---------------------
+ * Fichier header contenant les structures et les signatures 
+ * des fonctions de création d'arbres et de vérification de leur nature
+ */
+
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -18,9 +27,19 @@ struct PileElement {
     int max;
 };
 
+struct Foret {
+    struct Noeud* arbre;
+    struct Foret* suivant;
+};
+
+#define TAILLE_PILE 100000
+
 
 // Fonctions
 
 struct Noeud* creerNoeud(int valeur);
 bool estABR_recursif(struct Noeud* arbre, int min, int max);
 bool estABR_iteratif(struct Noeud* arbre);
+struct Noeud* creer_ABR(int taille);
+struct Noeud* creer_non_ABR(int taille);
+struct Noeud* creer_AB_aleatoire(int taille);

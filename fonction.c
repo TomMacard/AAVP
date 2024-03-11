@@ -1,3 +1,11 @@
+/*
+ * Fichier: fonction.c
+ * Auteur: Tom MACARD
+ * ---------------------
+ * Fichier contenants les fonctions de création d'arbres et 
+ * de vérification de leur nature.
+ */
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -6,9 +14,7 @@
 #include "fonction.h"
 
 
-
-
-// Fonction utilitaire pour créer un nouveau nœud
+// Fonction utilitaire pour créer un nouveau noeud
 struct Noeud* creerNoeud(int valeur) {
     struct Noeud* nouveauNoeud = (struct Noeud*)malloc(sizeof(struct Noeud));
     nouveauNoeud->valeur = valeur;
@@ -23,7 +29,7 @@ bool estABR_recursif(struct Noeud* arbre, int min, int max) {
     if (arbre == NULL)
         return true;
 
-    // Vérifie si la valeur du nœud est dans la plage autorisée
+    // Vérifie si la valeur du noeud est dans la plage autorisée
     if (arbre->valeur < min || arbre->valeur > max)
         return false;
 
@@ -39,10 +45,10 @@ bool estABR_iteratif(struct Noeud* arbre) {
         return true;
 
     // Utilisation d'une pile pour la traversée en profondeur
-    struct PileElement pile[1000]; // Taille arbitraire de la pile
+    struct PileElement pile[TAILLE_PILE]; // Taille arbitraire
     int sommet = -1; // Initialisation de la pile
 
-    // Empile le nœud racine avec les plages autorisées
+    // Empile le noeuud racine avec les plages autorisées
     pile[++sommet] = (struct PileElement){arbre, INT_MIN, INT_MAX};
 
     while (sommet >= 0) {
@@ -52,18 +58,56 @@ bool estABR_iteratif(struct Noeud* arbre) {
         int min = element.min;
         int max = element.max;
 
-        // Vérifie si la valeur du nœud est dans la plage autorisée
+        // Vérifie si la valeur du noeud est dans la plage autorisée
         if (noeud->valeur < min || noeud->valeur > max)
             return false;
 
-        // Empile le sous-arbre droit avec la plage autorisée mise à jour
+        // Empile le sous arbre droit avec la plage autorisée mise à jour
         if (noeud->droite != NULL)
             pile[++sommet] = (struct PileElement){noeud->droite, noeud->valeur + 1, max};
 
-        // Empile le sous-arbre gauche avec la plage autorisée mise à jour
+        // Empile le sous arbre gauche avec la plage autorisée mise à jour
         if (noeud->gauche != NULL)
             pile[++sommet] = (struct PileElement){noeud->gauche, min, noeud->valeur - 1};
     }
 
     return true;
 }
+
+
+struct Noeud* creer_ABR(int taille) {
+    struct Noeud* arbre = creerNoeud(taille / 2);
+    for (int i = 0; i < taille / 2; i++) {
+        arbre->gauche = creerNoeud(i);
+        arbre->droite = creerNoeud(taille - i);
+    }
+    return arbre;
+}
+
+struct Noeud* creer_non_ABR(int taille) {
+    struct Noeud* arbre = creerNoeud(taille / 2);
+    for (int i = 0; i < taille / 2; i++) {
+        if (i == taille/4) {
+            // noeud qui va casser l'ABR
+            arbre->gauche = creerNoeud(INT_MAX);
+            arbre->droite = creerNoeud(INT_MAX);
+        }
+        else {
+            arbre->gauche = creerNoeud(i);
+            arbre->droite = creerNoeud(taille - i);
+        }
+    } 
+
+
+
+    return arbre;
+}
+struct Noeud* creer_AB_aleatoire(int taille) {
+    struct Noeud* arbre = creerNoeud(taille / 2);
+    for (int i = 0; i < taille / 2; i++) {
+        arbre->gauche = creerNoeud(rand() % INT_MAX);
+        arbre->droite = creerNoeud(rand() % INT_MAX);
+    }
+    return arbre;
+}
+
