@@ -3,7 +3,7 @@
  * Auteur: Tom MACARD
  * ---------------------
  * Fichier contenants les fonctions de création d'arbres et 
- * de vérification de leur nature.
+ * de vérification de leur nature (ABR / Non ABR)
  */
 
 #include <stdio.h>
@@ -48,8 +48,8 @@ bool estABR_iteratif(struct Noeud* arbre) {
     struct PileElement pile[TAILLE_PILE]; // Taille arbitraire
     int sommet = -1; // Initialisation de la pile
 
-    // Empile le noeuud racine avec les plages autorisées
-    pile[++sommet] = (struct PileElement){arbre, INT_MIN, INT_MAX};
+    // Empile le noeud racine avec les plages autorisées
+    pile[++sommet] = (struct PileElement){arbre, 0, INT_MAX};
 
     while (sommet >= 0) {
         // Dépile un élément de la pile
@@ -66,14 +66,13 @@ bool estABR_iteratif(struct Noeud* arbre) {
         if (noeud->droite != NULL)
             pile[++sommet] = (struct PileElement){noeud->droite, noeud->valeur + 1, max};
 
-        // Empile le sous arbre gauche avec la plage autorisée mise à jour
+        // pareil à gauche
         if (noeud->gauche != NULL)
             pile[++sommet] = (struct PileElement){noeud->gauche, min, noeud->valeur - 1};
     }
 
     return true;
 }
-
 
 struct Noeud* creer_ABR(int taille) {
     struct Noeud* arbre = creerNoeud(taille / 2);
@@ -97,11 +96,10 @@ struct Noeud* creer_non_ABR(int taille) {
             arbre->droite = creerNoeud(taille - i);
         }
     } 
-
-
-
     return arbre;
 }
+
+
 struct Noeud* creer_AB_aleatoire(int taille) {
     struct Noeud* arbre = creerNoeud(taille / 2);
     for (int i = 0; i < taille / 2; i++) {

@@ -17,8 +17,18 @@
 # define TAILLE_ARBRE 1000
 
 
+// Taille max arbre pour analyse mémoire et vitesse
+// Exemple TAILLE_MAX_ARBRE = 8 -> 10^8 noeuds, soit environ 3 Go de mémoire
+// !!!!!! ATTENTION !!!!!!
+// Sur ma machine (16Go de RAM), 9 et + -> RAM saturée et crash
+// Par défaut, 7 devrait fonctionner sur la plupart des machines
+# define TAILLE_MAX_ARBRE 7
+
+
 
 int main() {
+
+    printf("Taille de structure Noeud: %zu octets\n", sizeof(struct Noeud));
 
     // Déclaration des variables
     double w1;
@@ -62,7 +72,8 @@ int main() {
     foret->suivant->suivant->suivant->suivant = NULL;
 
 
-    // Calculs
+    // Calculs généraux de tous les arbres
+    printf("=======Calculs généraux=======\n");
     struct Foret* arbre_actuel = foret;
     i=1;
     while (arbre_actuel != NULL) {
@@ -78,13 +89,13 @@ int main() {
 
         // Affichage
         printf("=======Arbre numéro %d=======\n", i);
-        printf("Temps récursif    : %f\n", tempsRecursif);
+        printf("Temps récursif    : %.10f\n", tempsRecursif);
         if (resultatRecursif)
             printf("Résultat recursif : Oui ABR\n");
         else
             printf("Résultat recursif : Non ABR\n");
 
-        printf("Temps itératif    : %f\n", tempsIteratif);
+        printf("Temps itératif    : %.10f\n", tempsIteratif);
         if (resultatIteratif)
             printf("Résultat itératif : Oui ABR\n");
         else
@@ -94,6 +105,39 @@ int main() {
         i++;
         arbre_actuel = arbre_actuel->suivant;
     }
+    printf("=====Fin des calculs généraux=====\n");
+
+
+    printf("\n\n\n=======Analyse de taille d'arbre======\n");
+    int taille = 1;
+    for (int j = 1; j <= TAILLE_MAX_ARBRE; j++)
+    {
+        taille = taille*10;
+        struct Noeud* arbre = creer_ABR(taille);
+        w1 = omp_get_wtime();
+        resultatRecursif = estABR_recursif(arbre, INT_MIN, INT_MAX);
+        w2 = omp_get_wtime();
+        tempsRecursif = w2 - w1;
+
+        w1 = omp_get_wtime();
+        resultatIteratif = estABR_iteratif(arbre);
+        w2 = omp_get_wtime();
+        tempsIteratif = w2 - w1;
+        free(arbre);
+
+        // Affichage
+        printf("=======Arbre de taille %d=======\n", taille);
+        printf("Temps récursif    : %.10f\n", tempsRecursif);
+        printf("Temps itératif    : %.10f\n", tempsIteratif);
+
+    }
+    printf("=====Fin Analyse de taille d'arbre=====\n");
+
+
+
+
+
+
 
     return 0;
 }

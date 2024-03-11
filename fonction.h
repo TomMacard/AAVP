@@ -2,8 +2,8 @@
  * Fichier: fonction.h
  * Auteur: Tom MACARD
  * ---------------------
- * Fichier header contenant les structures et les signatures 
- * des fonctions de création d'arbres et de vérification de leur nature
+ * Fichier header contenant les structures et les signatures des fonctions
+ * de création d'arbres et de vérification de leur nature (ABR / Non ABR)
  */
 
 
@@ -13,7 +13,7 @@
 #include <limits.h>
 
 
-// Définition de la structure pour un nœud d'ABR
+// Définition de la structure pour un noeud d'ABR
 struct Noeud {
     int valeur;
     struct Noeud* gauche;
